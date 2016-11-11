@@ -1,0 +1,380 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "IdP",
+        "description": "User API",
+        "termsOfService": "http://www.10Duke.com",
+        "contact": {
+            "name": "Info",
+            "email": "info@10duke.com",
+            "url": "http://localhost"
+        },
+        "license": {
+            "name": "TBD",
+            "url": "http://tbd"
+        }
+    },
+    "host": "vslidp.10duke.com",
+    "basePath": "/user/v1",
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "parameters": {
+        "limit": {
+            "name": "limit",
+            "in": "query",
+            "description": "maximum number of results to return",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+        },
+        "offset": {
+            "name": "offset",
+            "in": "query",
+            "description": "offset from where results are read",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+        },
+        "sortBy": {
+            "name": "sortBy",
+            "in": "query",
+            "description": "field to sort by",
+            "required": false,
+            "type": "string"
+        },
+        "sortOrder": {
+            "name": "sortOrder",
+            "in": "query",
+            "description": "ascending or descending sort",
+            "required": false,
+            "type": "string",
+            "format": "ASC|DESC"
+        },
+        "query": {
+            "name": "query",
+            "in": "query",
+            "description": "query to filter by",
+            "required": false,
+            "type": "string"
+        },
+        "id": {
+            "name": "id",
+            "in": "query",
+            "description": "id to filter by",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+        }
+    },
+    "tags":[
+      "user"  
+    ],
+    "paths": {
+        "/users/{id}": {
+            "get": {
+                "tags" : [
+                  "user"  
+                ],
+                "description": "Returns a user from the system that the user has access to.",
+                "operationId": "findUser",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "id to filter by",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "user response",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/errorModel"
+                        }
+                    }
+                },
+                "x-tenduke-tested-operation": {
+                    "readOf": "#/definitions/User",
+                    "createOperationId": "createUser"
+                }
+            },
+            "delete": {
+                "tags" : [
+                  "user"
+                ],
+                "description": "deletes a single user based on the ID supplied",
+                "operationId": "deleteUser",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of user to delete",
+                        "required": true,
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "delete result",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/errorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "tags" : [
+                  "user"
+                ],
+                "x-tenduke-data-multiplicity": "Many",
+                "description": "Returns all users from the system that the user has access to.",
+                "operationId": "findUsers",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/query"
+                    },
+                    {
+                        "$ref": "#/parameters/offset"
+                    },
+                    {
+                        "$ref": "#/parameters/limit"
+                    },
+                    {
+                        "$ref": "#/parameters/sortBy"
+                    },
+                    {
+                        "$ref": "#/parameters/sortOrder"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "users response",
+                        "schema": {
+                            "$ref": "#/definitions/Users"
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/errorModel"
+                        }
+                    }
+                },
+                "x-tenduke-tested-operation": {
+                    "listOf": "#/definitions/User",
+                    "createOperationId": "createUser"
+                }
+            },
+            "post": {
+                "tags": [
+                  "user"  
+                ],
+                "description": "Creates a new user. Duplicates are not allowed.",
+                "operationId": "createUser",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "item",
+                        "in": "body",
+                        "description": "User object as JSON.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "user response",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/errorModel"
+                        }
+                    }
+                },
+                "x-tenduke-tested-operation": {
+                    "createOf": "#/definitions/User",
+                    "readOperationId": "findUser"
+                }
+            },
+            "put": {
+                "tags" : [
+                    "user"
+                ],
+                "description": "Updates a user. Duplicates are not allowed.",
+                "operationId": "updateUser",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "item",
+                        "in": "body",
+                        "description": "User as JSON with fields to update.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "user response",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "schema": {
+                            "$ref": "#/definitions/errorModel"
+                        }
+                    }
+                },
+                "x-tenduke-tested-operation": {
+                    "updateOf": "#/definitions/User",
+                    "createOperationId": "createUser",
+                    "readOperationId": "findUser"
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Metadata": {
+            "type": "object",
+            "properties": {
+                "offset": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Position in pagination."
+                },
+                "limit": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Number of items to retrieve (100 max)."
+                },
+                "count": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Total number of items available."
+                }
+            }
+        },
+        "User": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "displayName": {
+                    "type": "string"
+                },
+                "validUntil": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "description": {
+                    "type": "string",
+                    "format": "text/plain"
+                },
+                "validFrom": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "email": {
+                    "type": "string",
+                    "format": "email"
+                }
+            }
+        },
+        "Users": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/User"
+            }
+        },
+        "Group": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "Groups": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/Group"
+            }
+        },
+        "PermissionDefinition": {
+            "type": "string"
+        },
+        "errorModel": {
+            "type": "object",
+            "required": [
+                "code",
+                "message"
+            ],
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
