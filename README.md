@@ -2,7 +2,7 @@
 
 This project contains Java-client for 10Duke Identity Provider.
 
-This project depends on [10 Duke Java-client core libraries](../java-client-core). Please see that
+This project depends on [10 Duke Java-client core libraries](https://github.com/10Duke/java-client-core). Please see that
 repository for more details.
 
 
